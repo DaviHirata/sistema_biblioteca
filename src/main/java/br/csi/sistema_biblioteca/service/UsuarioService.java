@@ -1,8 +1,9 @@
 package br.csi.sistema_biblioteca.service;
 
-import br.csi.sistema_biblioteca.model.Usuario;
-import br.csi.sistema_biblioteca.model.UsuariosRepository;
+import br.csi.sistema_biblioteca.model.usuario.Usuario;
+import br.csi.sistema_biblioteca.model.usuario.UsuariosRepository;
 import org.springframework.stereotype.Service;
+import java.util.UUID;
 
 import java.util.List;
 
@@ -22,16 +23,18 @@ public class UsuarioService {
         return this.usuariosRepository.findAll();
     }
 
-    public Usuario findById(Long id) {
-        return this.usuariosRepository.findById(id).get();
+    public Usuario getUsuarioUUID(String uuid) {
+        UUID uuidformatado = UUID.fromString(uuid);
+        return this.usuariosRepository.findUsuariosByUuid(uuidformatado);
     }
 
-    public void excluirUsuario(Long id) {
-        this.usuariosRepository.deleteById(id);
+    public void excluirUsuarioUuid(String uuid) {
+        UUID uuidformatado = UUID.fromString(uuid);
+        this.usuariosRepository.deleteUsuariosByUuid(uuidformatado);
     }
 
-    public void atualizarUsuario(Usuario usuario) {
-        Usuario u = this.usuariosRepository.getReferenceById(usuario.getId());
+    public void atualizarUsuarioUuid(Usuario usuario) {
+        Usuario u = this.usuariosRepository.findUsuariosByUuid(usuario.getUuid());
         u.setNome(usuario.getNome());
         u.setEmail(usuario.getEmail());
         u.setTipo_usuario(usuario.getTipo_usuario());

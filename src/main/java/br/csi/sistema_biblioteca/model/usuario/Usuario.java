@@ -1,11 +1,11 @@
-package br.csi.sistema_biblioteca.model;
+package br.csi.sistema_biblioteca.model.usuario;
 
 import jakarta.persistence.*;
 import lombok.*;
+import org.hibernate.annotations.UuidGenerator;
 
 import java.time.LocalDate;
-import java.time.OffsetDateTime;
-import java.util.Date;
+import java.util.UUID;
 
 @Entity
 @Table(name = "Usuarios")
@@ -17,6 +17,8 @@ import java.util.Date;
 public class Usuario {
     @Id  @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+    @UuidGenerator
+    private UUID uuid;
     @NonNull
     private String nome;
     @NonNull

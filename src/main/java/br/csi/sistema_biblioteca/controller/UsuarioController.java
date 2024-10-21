@@ -1,6 +1,6 @@
 package br.csi.sistema_biblioteca.controller;
 
-import br.csi.sistema_biblioteca.model.Usuario;
+import br.csi.sistema_biblioteca.model.usuario.Usuario;
 import br.csi.sistema_biblioteca.service.UsuarioService;
 import org.springframework.web.bind.annotation.*;
 
@@ -26,13 +26,18 @@ public class UsuarioController {
         return usuarioService.listarUsuarios();
     }
 
-    @PutMapping
+    @GetMapping("/uuid/{uuid}")
+    public Usuario usuario(@PathVariable String uuid) {
+        return this.usuarioService.getUsuarioUUID(uuid);
+    }
+
+    @PutMapping("/uuid")
     public void atualizar(@RequestBody Usuario usuario) {
-        this.usuarioService.atualizarUsuario(usuario);
+        this.usuarioService.atualizarUsuarioUuid(usuario);
     }
 
     @DeleteMapping("/{id}")
-    public void deletar(@PathVariable Long id) {
-        this.usuarioService.excluirUsuario(id);
+    public void deletar(@PathVariable String uuid) {
+        this.usuarioService.excluirUsuarioUuid(uuid);
     }
 }
