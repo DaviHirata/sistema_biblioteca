@@ -1,10 +1,12 @@
 package br.csi.sistema_biblioteca.service;
 
-import br.csi.sistema_biblioteca.model.autor.Autor;
-import br.csi.sistema_biblioteca.model.autor.AutoresRepository;
+import br.csi.sistema_biblioteca.model.Autor;
+import br.csi.sistema_biblioteca.repository.AutoresRepository;
+import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.UUID;
 
 @Service
 public class AutorService {
@@ -16,12 +18,19 @@ public class AutorService {
 
     public List<Autor> listarAutores() {return this.autoresRepository.findAll();}
 
-    public Autor findUsuarioById(Long id) {return this.autoresRepository.findById(id).get();}
+    public Autor getAutorUUID(String uuid) {
+        UUID uuidformatado = UUID.fromString(uuid);
+        return this.autoresRepository.findAutoresByUuid(uuidformatado);
+    }
 
-    public void excluirAutor(Long id) {this.autoresRepository.deleteById(id);}
+    @Transactional
+    public void excluirAutorUuid(String uuid) {
+        UUID uuidformatado = UUID.fromString(uuid);
+        this.autoresRepository.deleteAutoresByUuid(uuidformatado);
+    }
 
-    public void atualizar(Autor autor) {
-        Autor a = this.autoresRepository.getReferenceById(autor.getId());
+    public void atualizarAutorUuid(Autor autor) {
+        Autor a = this.autoresRepository.findAutoresByUuid(autor.getUuid());
         a.setNome(autor.getNome());
         this.autoresRepository.save(autor);
     }

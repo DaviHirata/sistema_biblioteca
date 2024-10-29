@@ -1,7 +1,8 @@
 package br.csi.sistema_biblioteca.service;
 
-import br.csi.sistema_biblioteca.model.livro.Livro;
-import br.csi.sistema_biblioteca.model.livro.LivroRepository;
+import br.csi.sistema_biblioteca.model.Livro;
+import br.csi.sistema_biblioteca.repository.LivroRepository;
+import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -28,6 +29,7 @@ public class LivroService {
         return this.livroRepository.findLivrosByUuid(uuidformatado);
     }
 
+    @Transactional
     public void excluirLivroUuid(String uuid) {
         UUID uuidformatado = UUID.fromString(uuid);
         this.livroRepository.deleteLivrosByUuid(uuidformatado);

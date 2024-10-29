@@ -1,7 +1,8 @@
 package br.csi.sistema_biblioteca.service;
 
-import br.csi.sistema_biblioteca.model.usuario.Usuario;
-import br.csi.sistema_biblioteca.model.usuario.UsuariosRepository;
+import br.csi.sistema_biblioteca.model.Usuario;
+import br.csi.sistema_biblioteca.repository.UsuariosRepository;
+import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
 import java.util.UUID;
 
@@ -28,6 +29,7 @@ public class UsuarioService {
         return this.usuariosRepository.findUsuariosByUuid(uuidformatado);
     }
 
+    @Transactional
     public void excluirUsuarioUuid(String uuid) {
         UUID uuidformatado = UUID.fromString(uuid);
         this.usuariosRepository.deleteUsuariosByUuid(uuidformatado);

@@ -1,35 +1,34 @@
-package br.csi.sistema_biblioteca.model.livro;
+package br.csi.sistema_biblioteca.model;
 
 import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.UuidGenerator;
 
+import java.time.LocalDate;
 import java.util.UUID;
 
 @Entity
-@Table(name = "Livros")
+@Table(name = "Usuarios")
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
 @RequiredArgsConstructor
-public class Livro {
+public class Usuario {
     @Id  @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     @UuidGenerator
     private UUID uuid;
     @NonNull
-    private String titulo;
+    private String nome;
     @NonNull
-    private String editora;
+    private String email;
     @NonNull
-    private int ano_publicacao;
+    private String telefone;
+    /*@NonNull
+    private String senha;*/
     @NonNull
-    private String isbn;
+    private String tipo_usuario;
     @NonNull
-    private String categoria;
-    @NonNull
-    private int quantidade_disponivel;
-    @NonNull
-    private String descricao;
+    private LocalDate data_nasc;
 }

@@ -1,6 +1,6 @@
 package br.csi.sistema_biblioteca.controller;
 
-import br.csi.sistema_biblioteca.model.livro.Livro;
+import br.csi.sistema_biblioteca.model.Livro;
 import br.csi.sistema_biblioteca.service.LivroService;
 import org.springframework.web.bind.annotation.*;
 
@@ -35,7 +35,7 @@ public class LivroController {
         this.livroService.atualizarLivroUuid(livro);
     }
 
-    @DeleteMapping("/{id}")
+    @DeleteMapping("/{uuid}")
     public void deletar(@PathVariable String uuid) {
         this.livroService.excluirLivroUuid(uuid);
     }

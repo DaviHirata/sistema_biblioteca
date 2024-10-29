@@ -1,5 +1,6 @@
-package br.csi.sistema_biblioteca.model.usuario;
+package br.csi.sistema_biblioteca.repository;
 
+import br.csi.sistema_biblioteca.model.Usuario;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.UUID;
