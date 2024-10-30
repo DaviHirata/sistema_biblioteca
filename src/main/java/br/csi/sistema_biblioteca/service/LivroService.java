@@ -1,7 +1,7 @@
 package br.csi.sistema_biblioteca.service;
 
 import br.csi.sistema_biblioteca.model.Livro;
-import br.csi.sistema_biblioteca.repository.LivroRepository;
+import br.csi.sistema_biblioteca.repository.LivrosRepository;
 import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
 
@@ -10,9 +10,9 @@ import java.util.UUID;
 
 @Service
 public class LivroService {
-    private final LivroRepository livroRepository;
+    private final LivrosRepository livroRepository;
 
-    public LivroService(LivroRepository livroRepository) {
+    public LivroService(LivrosRepository livroRepository) {
         this.livroRepository = livroRepository;
     }
 
