@@ -9,8 +9,12 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.util.UriComponentsBuilder;
 
+import java.net.URI;
 import java.util.List;
 
 @RestController
@@ -31,8 +35,10 @@ public class LivroController {
             @ApiResponse(responseCode = "400", description = "Dados inválidos fornecidos", content = @Content),
             @ApiResponse(responseCode = "404", description = "Erro de servidor", content = @Content),
     })
-    public void salvar(@RequestBody Livro livro) {
+    public ResponseEntity salvar(@RequestBody @Valid Livro livro, UriComponentsBuilder uriBuilder) {
         this.livroService.salvarLivro(livro);
+        URI uri = uriBuilder.path("/livro/uuid/{uuid}").buildAndExpand(livro.getUuid()).toUri();
+        return ResponseEntity.created(uri).body(livro);
     }
 
     @GetMapping("/listar")
@@ -53,7 +59,7 @@ public class LivroController {
                     content = @Content(mediaType = "application/json", schema = @Schema(implementation = Livro.class))),
             @ApiResponse(responseCode = "404", description = "Erro de servidor", content = @Content),
     })
-    public Livro livro(@PathVariable String uuid) {
+    public Livro buscarPorUUID(@PathVariable String uuid) {
         return this.livroService.getLivroUUID(uuid);
     }
 
@@ -65,8 +71,9 @@ public class LivroController {
             @ApiResponse(responseCode = "404", description = "Erro de servidor", content = @Content),
             @ApiResponse(responseCode = "500", description = "Erro interno de servidor - Operação não efetuada", content = @Content),
     })
-    public void atualizar(@RequestBody Livro livro) {
+    public ResponseEntity atualizar(@RequestBody Livro livro) {
         this.livroService.atualizarLivroUuid(livro);
+        return ResponseEntity.ok(livro);
     }
 
     @DeleteMapping("/{uuid}")
@@ -77,9 +84,10 @@ public class LivroController {
             @ApiResponse(responseCode = "404", description = "Erro de servidor", content = @Content),
             @ApiResponse(responseCode = "500", description = "Erro interno de servidor - Operação não efetuada", content = @Content),
     })
-    public void deletar(@PathVariable String uuid) {
+    public ResponseEntity deletar(@PathVariable String uuid) {
         //para deletar livros com reservas registradas, precisará deletar a reserva
         //também será necessário deletar a conexão entre o livro e o autor na tabela livros_autores
         this.livroService.excluirLivroUuid(uuid);
+        return ResponseEntity.noContent().build();
     }
 }

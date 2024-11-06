@@ -2,6 +2,7 @@ package br.csi.sistema_biblioteca.model;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.Size;
 import lombok.*;
 import org.hibernate.annotations.UuidGenerator;
 
@@ -30,6 +31,7 @@ public class Usuario {
     @Schema(description = "Email do usuário", example = "luciano.neves@gmail.com")
     private String email;
     @NonNull
+    @Size(min = 10, max = 11, message = "Número de telefone inválido. Não insira caracteres especiais")
     @Schema(description = "Número de telefone do usuário", example = "(55)99999-9999")
     private String telefone;
     /*@NonNull

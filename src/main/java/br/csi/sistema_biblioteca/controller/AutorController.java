@@ -8,8 +8,13 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.util.UriComponents;
+import org.springframework.web.util.UriComponentsBuilder;
 
+import java.net.URI;
 import java.util.List;
 
 @RestController
@@ -28,7 +33,11 @@ public class AutorController {
             @ApiResponse(responseCode = "400", description = "Dados inválidos fornecidos", content = @Content),
             @ApiResponse(responseCode = "404", description = "Erro de servidor", content = @Content),
     })
-    public void salvar(@RequestBody Autor autor){this.autorService.salvarAutor(autor);}
+    public ResponseEntity salvar(@RequestBody @Valid Autor autor, UriComponentsBuilder uriBuilder){
+        this.autorService.salvarAutor(autor);
+        URI uri = uriBuilder.path("/autor/uuid/{uuid}").buildAndExpand(autor.getUuid()).toUri();
+        return ResponseEntity.created(uri).body(autor);
+    }
 
     @GetMapping("/listar")
     @Operation(summary = "Listar autores", description = "Lista todos os autores do banco de dados")
@@ -46,7 +55,7 @@ public class AutorController {
                     content = @Content(mediaType = "application/json", schema = @Schema(implementation = Autor.class))),
             @ApiResponse(responseCode = "404", description = "Erro de servidor", content = @Content),
     })
-    public Autor autor(@PathVariable String uuid) {
+    public Autor buscarPorUUID(@PathVariable String uuid) {
         return this.autorService.getAutorUUID(uuid);
     }
 
@@ -58,8 +67,9 @@ public class AutorController {
             @ApiResponse(responseCode = "404", description = "Erro de servidor", content = @Content),
             @ApiResponse(responseCode = "500", description = "Erro interno de servidor - Operação não efetuada", content = @Content),
     })
-    public void atualizar(@RequestBody Autor autor){
+    public ResponseEntity atualizar(@RequestBody Autor autor){
         this.autorService.atualizarAutorUuid(autor);
+        return ResponseEntity.ok(autor);
     }
 
     @DeleteMapping("/{uuid}")
@@ -70,8 +80,9 @@ public class AutorController {
             @ApiResponse(responseCode = "404", description = "Erro de servidor", content = @Content),
             @ApiResponse(responseCode = "500", description = "Erro interno de servidor - Operação não efetuada", content = @Content),
     })
-    public void excluir(@PathVariable String uuid){
+    public ResponseEntity excluir(@PathVariable String uuid){
         // para deletar um autor, será necessário deletar a conexão entre o livro e o autor na tabela livros_autores
         this.autorService.excluirAutorUuid(uuid);
+        return ResponseEntity.noContent().build();
     }
 }

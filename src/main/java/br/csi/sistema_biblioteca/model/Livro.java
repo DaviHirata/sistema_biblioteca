@@ -2,6 +2,7 @@ package br.csi.sistema_biblioteca.model;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.Size;
 import lombok.*;
 import org.hibernate.annotations.UuidGenerator;
 
@@ -32,6 +33,7 @@ public class Livro {
     @Schema(description = "Ano da publicação do livro", example = "2019")
     private int ano_publicacao;
     @NonNull
+    @Size(max = 17, message = "ISBN deve ter 17 dígitos no máximo")
     @Schema(description = "ISBN do produto", example = "978-8595086357")
     private String isbn;
     @NonNull

@@ -8,8 +8,12 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.util.UriComponentsBuilder;
 
+import java.net.URI;
 import java.util.List;
 
 @RestController
@@ -30,8 +34,10 @@ public class UsuarioController {
             @ApiResponse(responseCode = "400", description = "Dados inválidos fornecidos", content = @Content),
             @ApiResponse(responseCode = "404", description = "Erro de servidor", content = @Content),
     })
-    public void salvar(@RequestBody Usuario usuario) {
+    public ResponseEntity salvar(@RequestBody @Valid Usuario usuario, UriComponentsBuilder uriBuilder) {
         this.usuarioService.salvarUsuario(usuario);
+        URI uri = uriBuilder.path("/usuario/uuid/{uuid}").buildAndExpand(usuario.getUuid()).toUri();
+        return ResponseEntity.created(uri).body(usuario);
     }
 
     @GetMapping("/listar")
@@ -52,7 +58,7 @@ public class UsuarioController {
                     content = @Content(mediaType = "application/json", schema = @Schema(implementation = Usuario.class))),
             @ApiResponse(responseCode = "404", description = "Erro de servidor", content = @Content),
     })
-    public Usuario usuario(@PathVariable String uuid) {
+    public Usuario buscarPorUUID(@PathVariable String uuid) {
         return this.usuarioService.getUsuarioUUID(uuid);
     }
 
@@ -64,8 +70,9 @@ public class UsuarioController {
             @ApiResponse(responseCode = "404", description = "Erro de servidor", content = @Content),
             @ApiResponse(responseCode = "500", description = "Erro interno de servidor - Operação não efetuada", content = @Content),
     })
-    public void atualizar(@RequestBody Usuario usuario) {
+    public ResponseEntity atualizar(@RequestBody Usuario usuario) {
         this.usuarioService.atualizarUsuarioUuid(usuario);
+        return ResponseEntity.ok(usuario);
     }
 
     @DeleteMapping("/{uuid}")
@@ -76,8 +83,9 @@ public class UsuarioController {
             @ApiResponse(responseCode = "404", description = "Erro de servidor", content = @Content),
             @ApiResponse(responseCode = "500", description = "Erro interno de servidor - Operação não efetuada", content = @Content),
     })
-    public void deletar(@PathVariable String uuid) {
+    public ResponseEntity deletar(@PathVariable String uuid) {
         //para deletar usuários com reserva, precisará deletar a reserva
         this.usuarioService.excluirUsuarioUuid(uuid);
+        return ResponseEntity.noContent().build();
     }
 }
