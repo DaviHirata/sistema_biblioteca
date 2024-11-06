@@ -1,5 +1,5 @@
 drop table reservas;
-
+/*data de devolução real pode ser nula na criação do registro*/
 create table reservas (
     id serial not null primary key,
     uuid UUID default gen_random_uuid(),
