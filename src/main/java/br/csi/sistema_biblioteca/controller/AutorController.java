@@ -75,7 +75,7 @@ public class AutorController {
     @DeleteMapping("/{uuid}")
     @Operation(summary = "Deletar um autor", description = "Método para deletar um autor da base de dados")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Exclusão feita com sucesso",
+            @ApiResponse(responseCode = "204", description = "Exclusão feita com sucesso",
                     content = @Content(mediaType = "application/json", schema = @Schema(implementation = Autor.class))),
             @ApiResponse(responseCode = "404", description = "Erro de servidor", content = @Content),
             @ApiResponse(responseCode = "500", description = "Erro interno de servidor - Operação não efetuada", content = @Content),

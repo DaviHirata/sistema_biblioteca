@@ -81,7 +81,7 @@ public class ReservaController {
     @DeleteMapping("/{uuid}")
     @Operation(summary = "Deletar uma reserva", description = "Método para remover um registro de reserva")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "201", description = "Exclusão da reserva bem sucedida",
+            @ApiResponse(responseCode = "204", description = "Exclusão da reserva bem sucedida",
                     content = @Content(mediaType = "application/json", schema = @Schema(implementation = Reserva.class))),
             @ApiResponse(responseCode = "400", description = "Dados inválidos fornecidos", content = @Content),
             @ApiResponse(responseCode = "500", description = "Erro interno de servidor - Operação não efetuada", content = @Content),
