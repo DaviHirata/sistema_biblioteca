@@ -9,6 +9,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.util.UriComponentsBuilder;
@@ -81,11 +82,21 @@ public class UsuarioController {
             @ApiResponse(responseCode = "204", description = "Exclusão feita com sucesso",
                     content = @Content(mediaType = "application/json", schema = @Schema(implementation = Usuario.class))),
             @ApiResponse(responseCode = "404", description = "Erro de servidor", content = @Content),
+            @ApiResponse(responseCode = "409", description = "Erro de conflito - usuário está associado " +
+                    "a outros registros", content = @Content),
             @ApiResponse(responseCode = "500", description = "Erro interno de servidor - Operação não efetuada", content = @Content),
     })
     public ResponseEntity deletar(@PathVariable String uuid) {
-        //para deletar usuários com reserva, precisará deletar a reserva
-        this.usuarioService.excluirUsuarioUuid(uuid);
-        return ResponseEntity.noContent().build();
+        try{
+            this.usuarioService.excluirUsuarioUuid(uuid);
+            return ResponseEntity.noContent().build();
+        } catch (DataIntegrityViolationException e){
+            //retorna erro 409 (conflito) informando que o usuário está vinculado a outros registros
+            return ResponseEntity.status(409).body("Não foi possível excluir o usuário pois ele está" +
+                    "associado a uma ou mais reservas");
+        } catch (Exception e){
+            //retorna um erro 500 para qualquer outro erro inesperado
+            return ResponseEntity.status(500).body("Erro interno ao tentar excluir o usuário");
+        }
     }
 }

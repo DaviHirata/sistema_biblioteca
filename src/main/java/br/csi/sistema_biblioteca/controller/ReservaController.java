@@ -18,7 +18,7 @@ import java.net.URI;
 import java.util.List;
 
 @RestController
-@RequestMapping("reserva")
+@RequestMapping("/reserva")
 @Tag(name = "Reservas", description = "Path relacionado para controlar as reservas de livros")
 public class ReservaController {
     private ReservaService reservaService;

@@ -1,7 +1,9 @@
 package br.csi.sistema_biblioteca.service;
 
 import br.csi.sistema_biblioteca.model.Autor;
+import br.csi.sistema_biblioteca.model.Livro;
 import br.csi.sistema_biblioteca.repository.AutoresRepository;
+import br.csi.sistema_biblioteca.repository.LivrosRepository;
 import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
 
@@ -11,8 +13,11 @@ import java.util.UUID;
 @Service
 public class AutorService {
     private final AutoresRepository autoresRepository;
+    private final LivrosRepository livrosRepository;
 
-    public AutorService(AutoresRepository autoresRepository) {this.autoresRepository = autoresRepository;}
+    public AutorService(AutoresRepository autoresRepository, LivrosRepository livrosRepository) {this.autoresRepository = autoresRepository;
+        this.livrosRepository = livrosRepository;
+    }
 
     public void salvarAutor(Autor autor) {this.autoresRepository.save(autor);}
 
@@ -21,6 +26,10 @@ public class AutorService {
     public Autor getAutorUUID(String uuid) {
         UUID uuidformatado = UUID.fromString(uuid);
         return this.autoresRepository.findAutoresByUuid(uuidformatado);
+    }
+
+    public List<Livro> listarLivrosPorAutorId(Long autor_id){
+        return livrosRepository.findLivrosByAutorId(autor_id);
     }
 
     @Transactional

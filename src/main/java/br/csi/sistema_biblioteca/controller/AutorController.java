@@ -1,6 +1,7 @@
 package br.csi.sistema_biblioteca.controller;
 
 import br.csi.sistema_biblioteca.model.Autor;
+import br.csi.sistema_biblioteca.model.Livro;
 import br.csi.sistema_biblioteca.service.AutorService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -9,6 +10,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.util.UriComponents;
@@ -59,6 +61,23 @@ public class AutorController {
         return this.autorService.getAutorUUID(uuid);
     }
 
+    @GetMapping("/{autorId}/livros")
+    @Operation(summary = "Listar livros por autor", description = "Retorna todos os livros associados a um autor específico")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Lista de livros retornada com sucesso",
+                    content = @Content(mediaType = "application/json", schema = @Schema(implementation = Livro.class))),
+            @ApiResponse(responseCode = "404", description = "Autor não encontrado", content = @Content)
+    })
+    public ResponseEntity<List<Livro>> listarLivrosPorAutor(@PathVariable Long autorId) {
+        List<Livro> livros = autorService.listarLivrosPorAutorId(autorId);
+
+        if (livros.isEmpty()) {
+            return ResponseEntity.notFound().build();
+        } else {
+            return ResponseEntity.ok(livros);
+        }
+    }
+
     @PutMapping("/uuid")
     @Operation(summary = "Atualizar um autor", description = "Método para atualizar um autor")
     @ApiResponses(value = {
@@ -78,11 +97,21 @@ public class AutorController {
             @ApiResponse(responseCode = "204", description = "Exclusão feita com sucesso",
                     content = @Content(mediaType = "application/json", schema = @Schema(implementation = Autor.class))),
             @ApiResponse(responseCode = "404", description = "Erro de servidor", content = @Content),
+            @ApiResponse(responseCode = "409", description = "Erro de conflito - autor está associado " +
+                    "a outros registros", content = @Content),
             @ApiResponse(responseCode = "500", description = "Erro interno de servidor - Operação não efetuada", content = @Content),
     })
     public ResponseEntity excluir(@PathVariable String uuid){
-        // para deletar um autor, será necessário deletar a conexão entre o livro e o autor na tabela livros_autores
-        this.autorService.excluirAutorUuid(uuid);
-        return ResponseEntity.noContent().build();
+        try{
+            this.autorService.excluirAutorUuid(uuid);
+            return ResponseEntity.noContent().build();
+        } catch (DataIntegrityViolationException e){
+            //retorna erro 409 (conflito) informando que o autor está vinculado a outros registros
+            return ResponseEntity.status(409).body("Não foi possível excluir o autor pois ele está" +
+                    "associado a um ou mais livros");
+        } catch (Exception e){
+            //retorna um erro 500 para qualquer outro erro inesperado
+            return ResponseEntity.status(500).body("Erro interno ao tentar excluir o autor");
+        }
     }
 }
