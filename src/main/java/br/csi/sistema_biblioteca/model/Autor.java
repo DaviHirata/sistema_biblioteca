@@ -1,5 +1,6 @@
 package br.csi.sistema_biblioteca.model;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.persistence.*;
 import lombok.*;
@@ -30,6 +31,7 @@ public class Autor {
     @Schema(description = "Nome do autor", example = "John Ronald Reuel Tolkien")
     private String nome;
 
+    @JsonBackReference
     @ManyToMany(mappedBy = "autores", fetch = FetchType.LAZY)
     private List<Livro> livro;
 }

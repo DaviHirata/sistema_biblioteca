@@ -1,5 +1,6 @@
 package br.csi.sistema_biblioteca.controller;
 
+import br.csi.sistema_biblioteca.dto.ReservaDTO;
 import br.csi.sistema_biblioteca.model.Reserva;
 import br.csi.sistema_biblioteca.model.Usuario;
 import br.csi.sistema_biblioteca.service.ReservaService;
@@ -16,9 +17,10 @@ import org.springframework.web.util.UriComponentsBuilder;
 
 import java.net.URI;
 import java.util.List;
+import java.util.UUID;
 
 @RestController
-@RequestMapping("reserva")
+@RequestMapping("/reserva")
 @Tag(name = "Reservas", description = "Path relacionado para controlar as reservas de livros")
 public class ReservaController {
     private ReservaService reservaService;
@@ -49,7 +51,7 @@ public class ReservaController {
             @ApiResponse(responseCode = "400", description = "Dados inválidos fornecidos", content = @Content),
             @ApiResponse(responseCode = "404", description = "Erro de servidor", content = @Content),
     })
-    public List<Reserva> listar() {
+    public List<ReservaDTO> listar() {
         return this.reservaService.listarReservas();
     }
 
@@ -61,7 +63,7 @@ public class ReservaController {
             @ApiResponse(responseCode = "400", description = "Dados inválidos fornecidos", content = @Content),
             @ApiResponse(responseCode = "404", description = "Erro de servidor", content = @Content),
     })
-    public Reserva buscarPorUUID(@PathVariable String uuid) {
+    public ReservaDTO buscarPorUUID(@PathVariable UUID uuid) {
         return this.reservaService.getReservaUUID(uuid);
     }
 
@@ -73,7 +75,7 @@ public class ReservaController {
             @ApiResponse(responseCode = "400", description = "Dados inválidos fornecidos", content = @Content),
             @ApiResponse(responseCode = "500", description = "Erro interno de servidor - Operação não efetuada", content = @Content),
     })
-    public ResponseEntity atualizar(@RequestBody Reserva reserva) {
+    public ResponseEntity atualizar(@RequestBody ReservaDTO reserva) {
         this.reservaService.atualizarReservaUuid(reserva);
         return ResponseEntity.ok(reserva);
     }

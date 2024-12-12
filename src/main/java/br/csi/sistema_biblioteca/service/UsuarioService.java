@@ -1,8 +1,12 @@
 package br.csi.sistema_biblioteca.service;
 
+import br.csi.sistema_biblioteca.dto.UsuarioDTO;
+import br.csi.sistema_biblioteca.model.DadosUsuarios;
 import br.csi.sistema_biblioteca.model.Usuario;
 import br.csi.sistema_biblioteca.repository.UsuariosRepository;
+import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import java.util.UUID;
 
@@ -17,16 +21,26 @@ public class UsuarioService {
     }
 
     public void salvarUsuario(Usuario usuario) {
+        //Criptografar a senha antes de ser salvo
+        usuario.setSenha(new BCryptPasswordEncoder().encode(usuario.getSenha()));
         this.usuariosRepository.save(usuario);
     }
 
-    public List<Usuario> listarUsuarios() {
-        return this.usuariosRepository.findAll();
+    public List<DadosUsuarios> listAllUsuarios() {
+        return this.usuariosRepository.findAll().stream().map(DadosUsuarios::new).toList();
     }
 
-    public Usuario getUsuarioUUID(String uuid) {
-        UUID uuidformatado = UUID.fromString(uuid);
-        return this.usuariosRepository.findUsuariosByUuid(uuidformatado);
+    public List<UsuarioDTO> listUsuarios(){
+        return this.usuariosRepository.findAllUsuariosDTO();
+    }
+
+    public DadosUsuarios findUsuario(Long id) {
+        Usuario usuario = this.usuariosRepository.getReferenceById(id);
+        return new DadosUsuarios(usuario);
+    }
+
+    public UsuarioDTO getUsuarioUUID(UUID uuid) {
+        return this.usuariosRepository.findUsuarioDTOByUuid(uuid);
     }
 
     @Transactional
@@ -35,13 +49,20 @@ public class UsuarioService {
         this.usuariosRepository.deleteUsuariosByUuid(uuidformatado);
     }
 
-    public void atualizarUsuarioUuid(Usuario usuario) {
-        Usuario u = this.usuariosRepository.findUsuariosByUuid(usuario.getUuid());
-        u.setNome(usuario.getNome());
-        u.setEmail(usuario.getEmail());
-        u.setTipo_usuario(usuario.getTipo_usuario());
-        u.setTelefone(usuario.getTelefone());
-        u.setData_nasc(usuario.getData_nasc());
-        this.usuariosRepository.save(u);
+    public void atualizarUsuarioUuid(UsuarioDTO usuarioDTO) {
+        Usuario usuarioExistente = usuariosRepository.findUsuariosByUuid(usuarioDTO.getUuid());
+        if (usuarioExistente == null) {
+            throw new EntityNotFoundException("Usuário não encontrado com o UUID fornecido.");
+        }
+
+        // Atualizar os atributos do Usuario com base no DTO
+        usuarioExistente.setNome(usuarioDTO.getNome());
+        usuarioExistente.setEmail(usuarioDTO.getEmail());
+        usuarioExistente.setTipo_usuario(usuarioDTO.getTipo_Usuario());
+        usuarioExistente.setTelefone(usuarioDTO.getTelefone());
+        usuarioExistente.setData_nasc(usuarioDTO.getData_Nasc());
+
+        // Salvar o objeto atualizado
+        usuariosRepository.save(usuarioExistente);
     }
 }

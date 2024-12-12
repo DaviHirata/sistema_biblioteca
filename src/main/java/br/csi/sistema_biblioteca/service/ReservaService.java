@@ -1,11 +1,13 @@
 package br.csi.sistema_biblioteca.service;
 
+import br.csi.sistema_biblioteca.dto.ReservaDTO;
 import br.csi.sistema_biblioteca.model.Livro;
 import br.csi.sistema_biblioteca.model.Reserva;
 import br.csi.sistema_biblioteca.model.Usuario;
 import br.csi.sistema_biblioteca.repository.LivrosRepository;
 import br.csi.sistema_biblioteca.repository.ReservasRepository;
 import br.csi.sistema_biblioteca.repository.UsuariosRepository;
+import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
 
@@ -28,13 +30,12 @@ public class ReservaService {
         this.reservasRepository.save(reserva);
     }
 
-    public List<Reserva> listarReservas() {
-        return this.reservasRepository.findAll();
+    public List<ReservaDTO> listarReservas() {
+        return this.reservasRepository.findAllReservasDTO();
     }
 
-    public Reserva getReservaUUID(String uuid) {
-        UUID uuidformatado = UUID.fromString(uuid);
-        return this.reservasRepository.findReservasByUuid(uuidformatado);
+    public ReservaDTO getReservaUUID(UUID uuid) {
+        return this.reservasRepository.findReservaDTOByUuid(uuid);
     }
 
     @Transactional
@@ -43,28 +44,28 @@ public class ReservaService {
         this.reservasRepository.deleteReservasByUuid(uuidformatado);
     }
 
-    public void atualizarReservaUuid(Reserva reserva) {
-        // Busca a reserva existente pelo UUID
-        Reserva r = this.reservasRepository.findReservasByUuid(reserva.getUuid());
-        if (r == null) {
-            throw new IllegalArgumentException("Reserva não encontrada com o UUID fornecido.");
+    public void atualizarReservaUuid(ReservaDTO reservaDTO) {
+        // Buscar a reserva existente pelo UUID
+        Reserva reservaExistente = this.reservasRepository.findReservasByUuid(reservaDTO.getUuid());
+        if (reservaExistente == null) {
+            throw new EntityNotFoundException("Reserva não encontrada com o UUID fornecido.");
         }
 
-        // Busca o usuário e o livro pelos IDs fornecidos
-        Usuario usuario = this.usuariosRepository.findById(reserva.getUsuario().getUsuario_id())
-                .orElseThrow(() -> new IllegalArgumentException("Usuário não encontrado com o ID fornecido."));
-        Livro livro = this.livrosRepository.findById(reserva.getLivro().getLivro_id())
-                .orElseThrow(() -> new IllegalArgumentException("Livro não encontrado com o ID fornecido."));
+        // Buscar o usuário e o livro pelos IDs fornecidos no DTO
+        Usuario usuario = this.usuariosRepository.findById(reservaDTO.getUsuarioId())
+                .orElseThrow(() -> new EntityNotFoundException("Usuário não encontrado com o ID fornecido."));
+        Livro livro = this.livrosRepository.findById(reservaDTO.getLivroId())
+                .orElseThrow(() -> new EntityNotFoundException("Livro não encontrado com o ID fornecido."));
 
-        // Define os dados atualizados na reserva existente
-        r.setUsuario(usuario);
-        r.setLivro(livro);
-        r.setData_emprestimo(reserva.getData_emprestimo());
-        r.setData_devolucao(reserva.getData_devolucao());
-        r.setData_devolucao_real(reserva.getData_devolucao_real());
-        r.setStatus(reserva.getStatus());
+        // Atualizar os atributos da reserva existente
+        reservaExistente.setUsuario(usuario);
+        reservaExistente.setLivro(livro);
+        reservaExistente.setData_emprestimo(reservaDTO.getDataEmprestimo());
+        reservaExistente.setData_devolucao(reservaDTO.getDataDevolucao());
+        reservaExistente.setData_devolucao_real(reservaDTO.getDataDevolucaoReal());
+        reservaExistente.setStatus(reservaDTO.getStatus());
 
-        // Salva a reserva atualizada
-        this.reservasRepository.save(r);
+        // Salvar a reserva atualizada
+        this.reservasRepository.save(reservaExistente);
     }
 }

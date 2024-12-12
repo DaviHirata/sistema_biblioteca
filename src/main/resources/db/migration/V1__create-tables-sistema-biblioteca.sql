@@ -1,5 +1,5 @@
 create table usuarios (
-    usuario_id serial not null primary key,
+    usuario_id bigserial not null primary key,
     uuid UUID default gen_random_uuid(),
     nome varchar(100) not null,
     email varchar(100) not null,
@@ -9,13 +9,13 @@ create table usuarios (
 );
 
 create table autores(
-    autor_id serial not null primary key,
+    autor_id bigserial not null primary key,
     uuid UUID default gen_random_uuid(),
     nome varchar(150) not null
 );
 
 create table livros(
-    livro_id serial not null primary key,
+    livro_id bigserial not null primary key,
     uuid UUID default gen_random_uuid(),
     titulo varchar(100) not null,
     editora varchar(100) not null,
@@ -26,11 +26,19 @@ create table livros(
     descricao text
 );
 
+create table livros_autores (
+    livro_id bigint not null,
+    autor_id bigint not null,
+    primary key (livro_id, autor_id),
+    foreign key (livro_id) references livros (livro_id),
+    foreign key (autor_id) references autores (autor_id)
+);
+
 create table reservas (
-    reserva_id serial not null primary key,
+    reserva_id bigserial not null primary key,
     uuid UUID default gen_random_uuid(),
-    usuario_id int not null,
-    livro_id int not null,
+    usuario_id bigint not null,
+    livro_id bigint not null,
     data_emprestimo date not null,
     data_devolucao date not null,
     data_devolucao_real date,
@@ -38,4 +46,3 @@ create table reservas (
     foreign key (usuario_id) references usuarios (usuario_id),
     foreign key (livro_id) references livros (livro_id)
 );
-

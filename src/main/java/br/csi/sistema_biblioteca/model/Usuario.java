@@ -41,8 +41,9 @@ public class Usuario {
     @Schema(description = "Número de telefone do usuário", example = "(55)99999-9999")
     private String telefone;
 
-    /*@NonNull
-    private String senha;*/
+    @NonNull
+    @Schema(description = "Senha do usuário")
+    private String senha;
 
     @NonNull
     @Schema(description = "Tipo de conta do usuário", example = "Cliente")
