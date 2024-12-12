@@ -13,16 +13,6 @@ public interface LivrosRepository extends JpaRepository<Livro, Long> {
     public Livro findLivrosByUuid(UUID uuid);
     public void deleteLivrosByUuid(UUID uuid);
 
-    @Query(value = "SELECT l FROM livros l JOIN l.autores a WHERE a.autor_id =: autor_id",
-            nativeQuery = true)
+    @Query("SELECT l FROM Livro l JOIN l.autores a WHERE a.autor_id = :autor_id")
     List<Livro> findLivrosByAutorId(Long autor_id);
-
-    @Query(value = "SELECT l.uuid, l.titulo, l.editora, l.ano_publicacao, l.isbn, " +
-            "l.categoria, l.quantidade_disponivel, l.descricao FROM livros l WHERE l.livro_id =: id",
-            nativeQuery = true)
-    LivroDTO findLivroDTOByUuid(@Param("id") Long id);
-
-    @Query(value = "SELECT l.uuid, l.titulo, l.editora, l.ano_publicacao, l.isbn, " +
-            "l.categoria, l.quantidade_disponivel, l.descricao FROM livros as l", nativeQuery = true)
-    List<LivroDTO> findAllLivrosDTO();
 }

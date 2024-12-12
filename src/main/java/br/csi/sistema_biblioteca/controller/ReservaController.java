@@ -1,6 +1,5 @@
 package br.csi.sistema_biblioteca.controller;
 
-import br.csi.sistema_biblioteca.dto.ReservaDTO;
 import br.csi.sistema_biblioteca.model.Reserva;
 import br.csi.sistema_biblioteca.model.Usuario;
 import br.csi.sistema_biblioteca.service.ReservaService;
@@ -17,7 +16,6 @@ import org.springframework.web.util.UriComponentsBuilder;
 
 import java.net.URI;
 import java.util.List;
-import java.util.UUID;
 
 @RestController
 @RequestMapping("/reserva")
@@ -51,7 +49,7 @@ public class ReservaController {
             @ApiResponse(responseCode = "400", description = "Dados inválidos fornecidos", content = @Content),
             @ApiResponse(responseCode = "404", description = "Erro de servidor", content = @Content),
     })
-    public List<ReservaDTO> listar() {
+    public List<Reserva> listar() {
         return this.reservaService.listarReservas();
     }
 
@@ -63,7 +61,7 @@ public class ReservaController {
             @ApiResponse(responseCode = "400", description = "Dados inválidos fornecidos", content = @Content),
             @ApiResponse(responseCode = "404", description = "Erro de servidor", content = @Content),
     })
-    public ReservaDTO buscarPorUUID(@PathVariable UUID uuid) {
+    public Reserva buscarPorUUID(@PathVariable String uuid) {
         return this.reservaService.getReservaUUID(uuid);
     }
 
@@ -75,7 +73,7 @@ public class ReservaController {
             @ApiResponse(responseCode = "400", description = "Dados inválidos fornecidos", content = @Content),
             @ApiResponse(responseCode = "500", description = "Erro interno de servidor - Operação não efetuada", content = @Content),
     })
-    public ResponseEntity atualizar(@RequestBody ReservaDTO reserva) {
+    public ResponseEntity atualizar(@RequestBody Reserva reserva) {
         this.reservaService.atualizarReservaUuid(reserva);
         return ResponseEntity.ok(reserva);
     }

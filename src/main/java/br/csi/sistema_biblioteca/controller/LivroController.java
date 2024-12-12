@@ -1,6 +1,5 @@
 package br.csi.sistema_biblioteca.controller;
 
-import br.csi.sistema_biblioteca.dto.LivroDTO;
 import br.csi.sistema_biblioteca.model.Autor;
 import br.csi.sistema_biblioteca.model.Livro;
 import br.csi.sistema_biblioteca.model.Usuario;
@@ -20,7 +19,6 @@ import org.springframework.web.util.UriComponentsBuilder;
 
 import java.net.URI;
 import java.util.List;
-import java.util.UUID;
 
 @RestController
 @RequestMapping("/livro")
@@ -70,19 +68,19 @@ public class LivroController {
                     content = @Content(mediaType = "application/json", schema = @Schema(implementation = Livro.class))),
             @ApiResponse(responseCode = "404", description = "Erro de servidor", content = @Content),
     })
-    public List<LivroDTO> listar() {
+    public List<Livro> listar() {
         return livroService.listarLivros();
     }
 
-    @GetMapping("/id/{id}")
+    @GetMapping("/uuid/{uuid}")
     @Operation(summary = "Listar livro específico", description = "Retorna um livro com base no uuid buscado")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Livro retornado com sucesso",
                     content = @Content(mediaType = "application/json", schema = @Schema(implementation = Livro.class))),
             @ApiResponse(responseCode = "404", description = "Erro de servidor", content = @Content),
     })
-    public LivroDTO buscarPorUUID(@PathVariable Long id) {
-        return this.livroService.getLivroUUID(id);
+    public Livro buscarPorUUID(@PathVariable String uuid) {
+        return this.livroService.getLivroUUID(uuid);
     }
 
     @PutMapping("/uuid")
@@ -93,7 +91,7 @@ public class LivroController {
             @ApiResponse(responseCode = "404", description = "Erro de servidor", content = @Content),
             @ApiResponse(responseCode = "500", description = "Erro interno de servidor - Operação não efetuada", content = @Content),
     })
-    public ResponseEntity atualizar(@RequestBody LivroDTO livro) {
+    public ResponseEntity atualizar(@RequestBody Livro livro) {
         this.livroService.atualizarLivroUuid(livro);
         return ResponseEntity.ok(livro);
     }

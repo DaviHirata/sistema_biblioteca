@@ -49,7 +49,7 @@ public class AutorController {
                     content = @Content(mediaType = "application/json", schema = @Schema(implementation = Autor.class))),
             @ApiResponse(responseCode = "404", description = "Erro de servidor", content = @Content),
     })
-    public List<AutorDTO> listar(){return autorService.listarAutores();}
+    public List<Autor> listar(){return autorService.listarAutores();}
 
     @GetMapping("/uuid/{uuid}")
     @Operation(summary = "Listar autor específico", description = "Retorna um autor com base no uuid buscado")
@@ -58,7 +58,7 @@ public class AutorController {
                     content = @Content(mediaType = "application/json", schema = @Schema(implementation = Autor.class))),
             @ApiResponse(responseCode = "404", description = "Erro de servidor", content = @Content),
     })
-    public AutorDTO buscarPorUUID(@PathVariable UUID uuid) {
+    public Autor buscarPorUUID(@PathVariable String uuid) {
         return this.autorService.getAutorUUID(uuid);
     }
 
@@ -87,7 +87,7 @@ public class AutorController {
             @ApiResponse(responseCode = "404", description = "Erro de servidor", content = @Content),
             @ApiResponse(responseCode = "500", description = "Erro interno de servidor - Operação não efetuada", content = @Content),
     })
-    public ResponseEntity atualizar(@RequestBody AutorDTO autor){
+    public ResponseEntity atualizar(@RequestBody Autor autor){
         this.autorService.atualizarAutorUuid(autor);
         return ResponseEntity.ok(autor);
     }

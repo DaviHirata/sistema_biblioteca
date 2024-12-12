@@ -24,12 +24,13 @@ public class AutorService {
 
     public void salvarAutor(Autor autor) {this.autoresRepository.save(autor);}
 
-    public List<AutorDTO> listarAutores() {
-        return autoresRepository.findAllAutoresDTO();
+    public List<Autor> listarAutores() {
+        return autoresRepository.findAll();
     }
 
-    public AutorDTO getAutorUUID(UUID uuid) {
-        return autoresRepository.findAutorDTOByUuid(uuid);
+    public Autor getAutorUUID(String uuid) {
+        UUID uuidformatado = UUID.fromString(uuid);
+        return this.autoresRepository.findAutoresByUuid(uuidformatado);
     }
 
     public List<Livro> listarLivrosPorAutorId(Long autor_id){
@@ -42,12 +43,12 @@ public class AutorService {
         this.autoresRepository.deleteAutoresByUuid(uuidformatado);
     }
 
-    public void atualizarAutorUuid(AutorDTO autorDTO) {
-        Autor autorExistente = this.autoresRepository.findAutoresByUuid(autorDTO.getUuid());
+    public void atualizarAutorUuid(Autor autor) {
+        Autor autorExistente = this.autoresRepository.findAutoresByUuid(autor.getUuid());
         if (autorExistente == null) {
             throw new EntityNotFoundException("Autor não encontrado com o UUID fornecido.");
         }
-        autorExistente.setNome(autorDTO.getNome());
+        autorExistente.setNome(autor.getNome());
         this.autoresRepository.save(autorExistente);
     }
 

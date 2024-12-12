@@ -51,8 +51,7 @@ public class SecurityConfig {
                                 .requestMatchers(HttpMethod.POST, "/autor").hasAuthority("administrador")
                                 .requestMatchers(HttpMethod.DELETE, "/autor").hasAuthority("administrador")
                                 .requestMatchers(HttpMethod.PUT, "/autor").hasAuthority("administrador")
-                                .requestMatchers(HttpMethod.GET, "/autor/").hasAnyAuthority(
-                                        "administrador", "cliente")
+                                .requestMatchers(HttpMethod.GET, "/autor").permitAll()
 
                                 //operações referentes às reservas
                                 .requestMatchers(HttpMethod.POST, "/reserva").hasAnyAuthority(

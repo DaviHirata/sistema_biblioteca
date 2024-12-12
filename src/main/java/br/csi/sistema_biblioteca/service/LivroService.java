@@ -23,8 +23,8 @@ public class LivroService {
         this.livroRepository.save(livro);
     }
 
-    public List<LivroDTO> listarLivros() {
-        return this.livroRepository.findAllLivrosDTO();
+    public List<Livro> listarLivros() {
+        return this.livroRepository.findAll();
     }
 
     public String atribuirAutor(Long livro_id, Autor autor) {
@@ -45,8 +45,9 @@ public class LivroService {
         }
     }
 
-    public LivroDTO getLivroUUID(Long id) {
-        return this.livroRepository.findLivroDTOByUuid(id);
+    public Livro getLivroUUID(String uuid) {
+        UUID uuidformatado = UUID.fromString(uuid);
+        return this.livroRepository.findLivrosByUuid(uuidformatado);
     }
 
     @Transactional
@@ -55,22 +56,20 @@ public class LivroService {
         this.livroRepository.deleteLivrosByUuid(uuidformatado);
     }
 
-    public void atualizarLivroUuid(LivroDTO livroDTO) {
-        Livro livroExistente = this.livroRepository.findLivrosByUuid(livroDTO.getUuid());
+    public void atualizarLivroUuid(Livro livro) {
+        Livro livroExistente = this.livroRepository.findLivrosByUuid(livro.getUuid());
 
         if (livroExistente == null) {
             throw new RuntimeException("Livro não encontrado");
         }
 
-        // Atualiza apenas os campos definidos no DTO
-        livroExistente.setTitulo(livroDTO.getTitulo());
-        livroExistente.setEditora(livroDTO.getEditora());
-        livroExistente.setAno_publicacao(livroDTO.getAnoPublicacao());
-        livroExistente.setIsbn(livroDTO.getIsbn());
-        livroExistente.setCategoria(livroDTO.getCategoria());
-        livroExistente.setQuantidade_disponivel(livroDTO.getQuantidadeDisponivel());
-        livroExistente.setDescricao(livroDTO.getDescricao());
-
-        this.livroRepository.save(livroExistente);
+        livro.setTitulo(livro.getTitulo());
+        livro.setEditora(livro.getEditora());
+        livro.setAno_publicacao(livro.getAno_publicacao());
+        livro.setIsbn(livro.getIsbn());
+        livro.setCategoria(livro.getCategoria());
+        livro.setQuantidade_disponivel(livro.getQuantidade_disponivel());
+        livro.setDescricao(livro.getDescricao());
+        this.livroRepository.save(livro);
     }
 }

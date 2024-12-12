@@ -1,7 +1,5 @@
 package br.csi.sistema_biblioteca.controller;
 
-import br.csi.sistema_biblioteca.dto.UsuarioDTO;
-import br.csi.sistema_biblioteca.model.DadosUsuarios;
 import br.csi.sistema_biblioteca.model.Usuario;
 import br.csi.sistema_biblioteca.service.UsuarioService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -18,7 +16,6 @@ import org.springframework.web.util.UriComponentsBuilder;
 
 import java.net.URI;
 import java.util.List;
-import java.util.UUID;
 
 @RestController
 @RequestMapping("/usuario")
@@ -44,17 +41,6 @@ public class UsuarioController {
         return ResponseEntity.created(uri).body(usuario);
     }
 
-    @GetMapping("/{id}")
-    @Operation(summary = "Listar um usuário pelo id", description = "Lista o usuário procurado pelo id no banco de dados")
-    @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Usuário retornado com sucesso",
-                    content = @Content(mediaType = "application/json", schema = @Schema(implementation = Usuario.class))),
-            @ApiResponse(responseCode = "404", description = "Erro de servidor", content = @Content),
-    })
-    public DadosUsuarios findById(@PathVariable Long id) {
-        return this.usuarioService.findUsuario(id);
-    }
-
     @GetMapping("/listar")
     @Operation(summary = "Listar usuários", description = "Lista todos os usuários do banco de dados")
     @ApiResponses(value = {
@@ -62,19 +48,8 @@ public class UsuarioController {
                     content = @Content(mediaType = "application/json", schema = @Schema(implementation = Usuario.class))),
             @ApiResponse(responseCode = "404", description = "Erro de servidor", content = @Content),
     })
-    public List<UsuarioDTO> listar() {
+    public List<Usuario> listar() {
         return usuarioService.listUsuarios();
-    }
-
-    @GetMapping("/listarDados")
-    @Operation(summary = "Listar dados de todos usuários", description = "Lista todos os usuários do banco de dados")
-    @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Lista retornada com sucesso",
-                    content = @Content(mediaType = "application/json", schema = @Schema(implementation = Usuario.class))),
-            @ApiResponse(responseCode = "404", description = "Erro de servidor", content = @Content),
-    })
-    public List<DadosUsuarios> listarTodosUsuarios() {
-        return usuarioService.listAllUsuarios();
     }
 
     @GetMapping("/uuid/{uuid}")
@@ -84,7 +59,7 @@ public class UsuarioController {
                     content = @Content(mediaType = "application/json", schema = @Schema(implementation = Usuario.class))),
             @ApiResponse(responseCode = "404", description = "Erro de servidor", content = @Content),
     })
-    public UsuarioDTO buscarPorUUID(@PathVariable UUID uuid) {
+    public Usuario buscarPorUUID(@PathVariable String uuid) {
         return this.usuarioService.getUsuarioUUID(uuid);
     }
 
@@ -96,7 +71,7 @@ public class UsuarioController {
             @ApiResponse(responseCode = "404", description = "Erro de servidor", content = @Content),
             @ApiResponse(responseCode = "500", description = "Erro interno de servidor - Operação não efetuada", content = @Content),
     })
-    public ResponseEntity atualizar(@RequestBody UsuarioDTO usuario) {
+    public ResponseEntity atualizar(@RequestBody Usuario usuario) {
         this.usuarioService.atualizarUsuarioUuid(usuario);
         return ResponseEntity.ok(usuario);
     }

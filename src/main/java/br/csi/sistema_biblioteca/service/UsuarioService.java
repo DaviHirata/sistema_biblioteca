@@ -30,8 +30,8 @@ public class UsuarioService {
         return this.usuariosRepository.findAll().stream().map(DadosUsuarios::new).toList();
     }
 
-    public List<UsuarioDTO> listUsuarios(){
-        return this.usuariosRepository.findAllUsuariosDTO();
+    public List<Usuario> listUsuarios(){
+        return this.usuariosRepository.findAll();
     }
 
     public DadosUsuarios findUsuario(Long id) {
@@ -39,8 +39,9 @@ public class UsuarioService {
         return new DadosUsuarios(usuario);
     }
 
-    public UsuarioDTO getUsuarioUUID(UUID uuid) {
-        return this.usuariosRepository.findUsuarioDTOByUuid(uuid);
+    public Usuario getUsuarioUUID(String uuid) {
+        UUID uuidformatado = UUID.fromString(uuid);
+        return this.usuariosRepository.findUsuariosByUuid(uuidformatado);
     }
 
     @Transactional
@@ -49,20 +50,13 @@ public class UsuarioService {
         this.usuariosRepository.deleteUsuariosByUuid(uuidformatado);
     }
 
-    public void atualizarUsuarioUuid(UsuarioDTO usuarioDTO) {
-        Usuario usuarioExistente = usuariosRepository.findUsuariosByUuid(usuarioDTO.getUuid());
-        if (usuarioExistente == null) {
-            throw new EntityNotFoundException("Usuário não encontrado com o UUID fornecido.");
-        }
-
-        // Atualizar os atributos do Usuario com base no DTO
-        usuarioExistente.setNome(usuarioDTO.getNome());
-        usuarioExistente.setEmail(usuarioDTO.getEmail());
-        usuarioExistente.setTipo_usuario(usuarioDTO.getTipo_Usuario());
-        usuarioExistente.setTelefone(usuarioDTO.getTelefone());
-        usuarioExistente.setData_nasc(usuarioDTO.getData_Nasc());
-
-        // Salvar o objeto atualizado
-        usuariosRepository.save(usuarioExistente);
+    public void atualizarUsuarioUuid(Usuario usuario) {
+        Usuario u = this.usuariosRepository.findUsuariosByUuid(usuario.getUuid());
+        u.setNome(usuario.getNome());
+        u.setEmail(usuario.getEmail());
+        u.setTipo_usuario(usuario.getTipo_usuario());
+        u.setTelefone(usuario.getTelefone());
+        u.setData_nasc(usuario.getData_nasc());
+        this.usuariosRepository.save(u);
     }
 }

@@ -12,11 +12,4 @@ import java.util.UUID;
 public interface AutoresRepository extends JpaRepository<Autor, Long> {
     public Autor findAutoresByUuid(UUID uuid);
     public void deleteAutoresByUuid(UUID uuid);
-
-    @Query(value = "SELECT a.uuid as uuid, a.nome as nome FROM autores as a WHERE a.uuid =: uuid",
-            nativeQuery = true)
-    AutorDTO findAutorDTOByUuid(@Param("uuid") UUID uuid);
-
-    @Query(value = "SELECT a.uuid as uuid, a.nome as nome FROM autores a", nativeQuery = true)
-    List<AutorDTO> findAllAutoresDTO();
 }

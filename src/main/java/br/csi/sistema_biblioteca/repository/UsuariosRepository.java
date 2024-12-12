@@ -13,13 +13,5 @@ public interface UsuariosRepository extends JpaRepository<Usuario, Long> {
     public Usuario findUsuariosByUuid(UUID uuid);
     public void deleteUsuariosByUuid(UUID uuid);
 
-    @Query(value = "SELECT u.uuid, u.nome, u.email, u.senha, u.telefone, u.tipo_usuario, u.data_nasc " +
-            "FROM usuarios u WHERE u.uuid =: uuid", nativeQuery = true)
-    UsuarioDTO findUsuarioDTOByUuid(@Param("uuid") UUID uuid);
-
-    @Query(value = "SELECT u.uuid, u.nome, u.email, u.senha, u.telefone, u.tipo_usuario, u.data_nasc " +
-            "FROM usuarios u", nativeQuery = true)
-    List<UsuarioDTO> findAllUsuariosDTO();
-
     public Usuario findUsuarioByEmail(String email);
 }
